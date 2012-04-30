@@ -1,2 +1,4 @@
 *.CEL
-
+.gitignore
+.Rproj.user
+*.Rproj
