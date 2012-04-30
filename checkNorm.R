@@ -16,26 +16,26 @@ synapseQuery('SELECT id, name FROM entity WHERE entity.parentId == "syn134305"')
 normEval <- function(dataEnt, trtString){
   tmpEset <- dataEnt$objects$rmaEset
   treatment <- ifelse(grepl(trtString, tolower(sampleNames(tmpEset))), 1, 0)
-  dataEnt <- addObject(dataEnt, treatment)
+#  dataEnt <- addObject(dataEnt, treatment)
   
   tmpFit <- snm(exprs(tmpEset), adj.var=model.matrix(~factor(treatment)), rm.adj=T)
   tmpMat <- tmpFit$norm.dat
   u <- fs(tmpMat)
-  f <- tempfile(pattern="pctVar", fileext=".png")
-  png(f)
+#  f <- tempfile(pattern="pctVar", fileext=".png")
+#  png(f)
   plot(u$d, main="percent variance explained after removing treatment variable", ylab="% variance explained")
-  dev.off()
-  dataEnt <- addFile(dataEnt, f)
+#  dev.off()
+#  dataEnt <- addFile(dataEnt, f)
   
-  f <- tempfile(pattern="svd1v2", fileext=".png")
-  png(f)
+#  f <- tempfile(pattern="svd1v2", fileext=".png")
+#  png(f)
   print(xyplot(u$v[, 1] ~ u$v[, 2], groups = treatment, main="svd after removing treatment variable", ylab="1st svd", xlab="2nd svd"))
-  dev.off()
-  dataEnt <- addFile(dataEnt, f)
-  dataEnt <- storeEntity(dataEnt)
+#  dev.off()
+#  dataEnt <- addFile(dataEnt, f)
+#  dataEnt <- storeEntity(dataEnt)
 }
 
-## BETA CATENIN
+## BETA CATENIN (one outlier)
 checkEnt <- loadEntity("syn299099")
 sampleNames(checkEnt$objects$rmaEset)
 res <- normEval(checkEnt, "bcat")
@@ -45,12 +45,12 @@ checkEnt <- loadEntity("syn299101")
 sampleNames(checkEnt$objects$rmaEset)
 res <- normEval(checkEnt, "e2f3")
 
-## EGFR
+## EGFR (two outliers)
 checkEnt <- loadEntity("syn299103")
 sampleNames(checkEnt$objects$rmaEset)
 res <- normEval(checkEnt, "wtegf")
 
-## Myc
+## Myc (3 outliers)
 checkEnt <- loadEntity("syn299105")
 sampleNames(checkEnt$objects$rmaEset)
 res <- normEval(checkEnt, "m")
