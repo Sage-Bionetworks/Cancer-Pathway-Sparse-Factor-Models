@@ -14,7 +14,8 @@ res <- lapply(as.list(theseGSEs), function(x){
   myQuery2 <- synapseQuery(paste("SELECT id, name FROM entity WHERE entity.parentId=='", myQuery$study.id, "'", sep=""))
   
   tmp <- downloadEntity(myQuery2$entity.id)
-  tmpAB <- ReadAffy( celfile.path = tmp$cacheDir )
+  theseFiles <- file.path(tmp$cacheDir, tmp$files)[ grep("U133", sapply(as.list(file.path(tmp$cacheDir, tmp$files)), whatcdf)) ]
+  tmpAB <- ReadAffy( filenames=theseFiles )
   rmaEset <- rma(tmpAB, normalize=T, background=F)
   
   tmpEnt <- ExpressionData(list(name=paste(x, "- RMA normalized"),
