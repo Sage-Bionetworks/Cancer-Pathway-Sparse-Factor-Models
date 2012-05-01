@@ -18,7 +18,7 @@ res <- lapply(as.list(theseData$entity.id), function(x){
   treatment <- ifelse(grepl(annotValue(tmp, "treatmentString"), tolower(sampleNames(rmaEset))), 1, 0)
   
   ## PLOTS CREATED AND STORED SUCH THAT CAN BE ATTACHED VIA WEB UI AS ATTACHMENTS ON YET SUPPORTED IN R CLIENT
-  myDir <- tempfile(pattern="dir", tmpdir = path.expand("~/"), fileext="")
+  myDir <- tempfile(pattern=strsplit(propertyValue(tmp, "name"), " ")[[1]][2], tmpdir = path.expand("~/"), fileext="")
   dir.create(myDir)
   
   tmpFit <- snm(exprs(rmaEset), adj.var=model.matrix(~factor(treatment)), rm.adj=T)
