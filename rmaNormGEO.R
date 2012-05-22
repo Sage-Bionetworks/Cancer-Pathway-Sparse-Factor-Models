@@ -17,6 +17,10 @@ res <- lapply(as.list(theseGSEs), function(x){
   theseFiles <- file.path(tmp$cacheDir, tmp$files)[ grep("U133", sapply(as.list(file.path(tmp$cacheDir, tmp$files)), whatcdf)) ]
   tmpAB <- ReadAffy( filenames=theseFiles )
   rmaEset <- rma(tmpAB, normalize=T, background=F)
+  ## UPDATE TO INCLUDE TREATMENT INFORMATION ONCE AVAILABLE
+#   tmpPhen <- pData(rmaEset)
+#   tmpPhen$treatment <- treatment
+#   pData(rmaEset) <- tmpPhen
   
   tmpEnt <- ExpressionData(list(name=paste(x, "- RMA normalized"),
                                 parentId="syn134305"))
