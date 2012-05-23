@@ -47,3 +47,8 @@ outlierPC1N <- findOutlier(svdObjNew, 1)
 outlierPC2N <- findOutlier(svdObjNew, 2)
 outlierPC3N <- findOutlier(svdObjNew, 3)
 
+  # Looks good.
+
+snmBCatEnt <- loadEntity('syn308414')
+snmBCatEnt <- addObject(snmBCatEnt, bCatFit$norm.dat)
+
