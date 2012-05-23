@@ -2,11 +2,12 @@
 ## PROGRAM WRITTEN TO NORMALIZE DATA
 #####
 
-options(stringsAsFactors=F)
+options(stringsAsFactors = F)
 
 require(synapseClient)
 require(affy)
 require(corpcor)
+require(car)
 
 fs <-function (x){
   u <- fast.svd(t(scale(t(x), scale = FALSE)), tol = 0)
@@ -20,18 +21,55 @@ res <- lapply(as.list(theseData$entity.id), function(x){
   tmp <- downloadEntity(x)
   tmpAB <- ReadAffy( celfile.path = tmp$cacheDir )
   rmaEset <- rma(tmpAB, normalize=T, background=F)
-  treatment <- ifelse(grepl(annotValue(tmp, "treatmentString"), tolower(sampleNames(rmaEset))), 1, 0)
+  treatment <- ifelse(grepl(annotValue(tmp, "treatmentString"), 
+                            tolower(sampleNames(rmaEset))), 1, 0)
   tmpPhen <- pData(rmaEset)
   tmpPhen$treatment <- treatment
   pData(rmaEset) <- tmpPhen
   
-  ## PLOTS CREATED AND STORED SUCH THAT CAN BE ATTACHED VIA WEB UI AS ATTACHMENTS ON YET SUPPORTED IN R CLIENT
-  myDir <- tempfile(pattern=strsplit(propertyValue(tmp, "name"), " ")[[1]][2], tmpdir = path.expand("~/"), fileext="")
+  ## PLOTS CREATED AND STORED SUCH THAT CAN BE ATTACHED VIA WEB UI AS 
+  ## ATTACHMENTS ON YET SUPPORTED IN R CLIENT
+  myDir <- tempfile(pattern=strsplit(propertyValue(tmp, "name"), " ")[[1]][2], 
+                    tmpdir = path.expand("~/"), fileext="")
   dir.create(myDir)
   
-  #####
-  ## NEEDS TO BE UPDATED WITH OUTLIER REMOVAL
-  #####
+  ## TO IDENTIFY OUTLIERS, FIRST MODEL OUT TREATMENT EFFECTS
+  treatMM <- model.matrix(~ factor(treatment))
+  expressMat <- exprs(rmaEset)
+  tmpMat <- expressMat - t(treatMM %*% solve(t(treatMM) %*% treatMM) %*% 
+    t(treatMM) %*% t(expressMat))
+  svdObj <- fs(tmpMat)
+  
+  ## THEN USE THE CAR PACKAGE outlierTest() TO ASSESS THE THREE FIRST PRINCIPAL
+  ## AXES AND RETURN THE SAMPLES THAT ARE OUTLIERS
+  top3Axes <- svdObj$v[ , 1:3]
+  outlierSamples <- apply(top3Axes, 2, function(column){
+    outlierObj <- outlierTest(lm(column ~ 1))
+    if (outlierObj$signif == 'TRUE'){
+      outSamp <- names(outlierObj$rstudent)
+    } else {
+      outSamp <- NA
+    }
+  })
+  
+  expressionset[ -na.omit(as.numeric(outlierSamples)) ]
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 #   tmpFit <- snm(exprs(rmaEset), adj.var=model.matrix(~factor(treatment)), rm.adj=T)
 #   tmpMat <- tmpFit$norm.dat
 #   
