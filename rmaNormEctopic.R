@@ -14,6 +14,13 @@ require(synapseClient)
 require(affy)
 require(corpcor)
 require(car)
+require(ggplot2)
+
+#####
+## BRING IN ANY NECESSARY SYNAPSE CODE ENTITIES
+####
+multiPlotEnt <- loadEntity('syn274067')
+attach(multiPlotEnt)
 
 #####
 ## DEFINE FUNCTIONS
@@ -44,9 +51,28 @@ removeTx <- function(x){
   tmpTreatment <- x$treatment
   treatMM <- model.matrix(~ factor(tmpTreatment))
   tmpMat <- tmpExpress - t(treatMM %*% solve(t(treatMM) %*% treatMM) %*% 
-    t(treatMM) %*% t(tempExpress))
+    t(treatMM) %*% t(tmpExpress))
   svdObj <- fs(tmpMat)
   return(list('svdObj' = svdObj, "tmpMat" <- tmpMat))
+}
+
+# function [4] for visualizing the data before adjustment
+vizData <- function(rmaEset, pc = 1){
+  rmaSVD <- fs(exprs(rmaEset))
+  rmaDF <- as.data.frame(cbind(1:dim(rmaEset)[2], rmaSVD$v[ , 1:3]))
+  rmaTx <- rmaEset$treatment
+  colnames(rmaDF)[2:4] <- paste('Eigen', 1:3, sep = '')
+  colnames(rmaDF)[1] <- 'Samples'
+  rmaFig <- ggplot(rmaDF, aes(x = rmaDF[ , 1], rmaDF[ , pc + 1])) + 
+    geom_point(aes(colour = factor(rmaTx))) +
+    opts(title = 'SVD Plot of Unadjusted Data') +
+    xlab('Samples') + ylab(paste('EigenGene', pc))
+  return(rmaFig)
+}
+
+# function [5] for visualizing the data after adjustment
+vizAdjData <- function(bleachList, pc){
+  
 }
 
 #####
@@ -63,6 +89,13 @@ names(rmaList) <- theseData[ , 1]
 
 # remove the treatment effects so we can identify outlier samples
 bleachList <- lapply(rmaList, removeTx)
+names(bleachList) <- theseData[ , 1]
+
+# visualize the unadjusted data in principle component space
+beforeViz <- lapply(rmaList, vizData)
+names(beforeViz) <- theseData[ , 1]
+
+
 
 # res <- lapply(as.list(theseData$entity.id), function(x){
 #   tmp <- downloadEntity(x)
