@@ -57,23 +57,25 @@ removeTx <- function(x){
 }
 
 # function [4] for visualizing the data before adjustment
-vizData <- function(rmaEset, pc = 1){
-  rmaSVD <- fs(exprs(rmaEset))
-  rmaDF <- as.data.frame(cbind(1:dim(rmaEset)[2], rmaSVD$v[ , 1:3]))
-  rmaTx <- rmaEset$treatment
-  colnames(rmaDF)[2:4] <- paste('Eigen', 1:3, sep = '')
-  colnames(rmaDF)[1] <- 'Samples'
-  rmaFig <- ggplot(rmaDF, aes(x = rmaDF[ , 1], rmaDF[ , pc + 1])) + 
-    geom_point(aes(colour = factor(rmaTx))) +
-    opts(title = 'SVD Plot of Unadjusted Data') +
-    xlab('Samples') + ylab(paste('EigenGene', pc))
-  return(rmaFig)
+vizData <- function(z){
+  tmpSVD <- fs(exprs(z))
+  tmpDF <- as.data.frame(cbind(1:dim(z)[2], tmpSVD$v[ , 1]))
+  tmpPheno <- pData(z)
+  tmpTx <- tmpPheno[ , 2]
+  treatment <- tmpTx
+  colnames(tmpDF)[2] <- 'EigenOne'
+  colnames(tmpDF)[1] <- 'Samples'
+  p1 <- ggplot(tmpDF, aes(Samples, EigenOne))
+  p2 <- p1 + geom_point(aes(colour = factor(treatment)))
+  p3 <- p2 + opts(title = 'SVD Plot of Unadjusted Data')
+  p4 <- p3 + xlab('Samples') + ylab('EigenOne')
+  return(p4)
 }
 
 # function [5] for visualizing the data after adjustment
-vizAdjData <- function(bleachList, pc){
-  
-}
+# vizAdjData <- function(bleachList, pc){
+#   
+# }
 
 #####
 ## THE ACTUAL SCRIPT
@@ -83,17 +85,49 @@ vizAdjData <- function(bleachList, pc){
 theseData <- 
   synapseQuery('SELECT id, name FROM entity WHERE entity.parentId == "syn162399"')
 
+expNames <- gsub(' ', '', theseData[ , 1])
+
 # rma normalize the constituent raw datasets and wrap them up as esets
 rmaList <- lapply(as.list(theseData$entity.id), makeEsets)
-names(rmaList) <- theseData[ , 1]
+names(rmaList) <- expNames
 
 # remove the treatment effects so we can identify outlier samples
 bleachList <- lapply(rmaList, removeTx)
-names(bleachList) <- theseData[ , 1]
+names(bleachList) <- expNames
 
 # visualize the unadjusted data in principle component space
 beforeViz <- lapply(rmaList, vizData)
-names(beforeViz) <- theseData[ , 1]
+names(beforeViz) <- expNames  ### HERE IS WHERE THE PROBLEMS START
+##################################################################
+# if I step through the vizData function, it works. If I run it in lapply,
+# it doesn't. The resulting list is populated with ggplot objects. You should
+# be able to type '> ggplotObject' and the figure will pop up. Instead I get
+# these weird 'Error in eval(expr, envir, enclos) : object 'rmaTx' not found' 
+# errors
+
+
+
+
+
+
+
+
+# beforeViz <- list()
+# for(i in 1:length(rmaList)){
+#   z <- rmaList[[i]]
+#   tmpSVD <- fs(exprs(z))
+#   tmpDF <- as.data.frame(cbind(1:dim(z)[2], tmpSVD$v[ , 1]))
+#   tmpPheno <- pData(z)
+#   tmpTx <- tmpPheno[ , 2]
+#   treatment <- tmpTx
+#   colnames(tmpDF)[2] <- 'EigenOne'
+#   colnames(tmpDF)[1] <- 'Samples'
+#   p1 <- ggplot(tmpDF, aes(Samples, EigenOne))
+#   p2 <- p1 + geom_point(aes(colour = factor(treatment)))
+#   p3 <- p2 + opts(title = 'SVD Plot of Unadjusted Data')
+#   p4 <- p3 + xlab('Samples') + ylab('EigenOne')
+#   beforeViz[i] <- p4
+# }
 
 
 
