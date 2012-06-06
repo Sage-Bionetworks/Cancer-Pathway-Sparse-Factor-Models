@@ -58,6 +58,7 @@ removeTx <- function(x){
 
 # function [4] for visualizing the data before adjustment
 vizData <- function(z){
+  z <- z[[1]]
   tmpSVD <- fs(exprs(z))
   tmpDF <- as.data.frame(cbind(1:dim(z)[2], tmpSVD$v[ , 1]))
   tmpPheno <- pData(z)
