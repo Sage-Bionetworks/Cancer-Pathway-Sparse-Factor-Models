@@ -5,9 +5,9 @@
 # Seattle, Washington
 # erich.huang@sagebase.org
 
-#####
+##########
 # LOAD IN REQUIRED LIBRARIES
-#####
+##########
 
 require(mGenomics)
 require(snm)
@@ -17,16 +17,16 @@ mplotEnt <- loadEntity('syn274067')
 attach(mplotEnt)
 # synapseLogin('username', 'password')
 
-#####
+##########
 # LOAD IN DATA ENTITY
-#####
+##########
 
 bCatEnt <- loadEntity('syn138507')
 fits <- runWorkflow(bCatEnt$cacheDir, workflow = 'snm')
 
-#####
+##########
 # PULL OUT THE EXPRESSION DATA
-####
+##########
 
 exprDat <- exprs(fits$hgu133a2[[1]])
 
@@ -37,36 +37,39 @@ sigObj <- calcSig(exprDat, X)
 
 # Generate a histogram
 histFig <- qplot(sigObj$pval, geom = 'histogram') + 
-  opts(title = 'P value distribution of transcripts') +
+  opts(title = 'P value distribution of transcripts\n') +
   xlab('p values') +
   ylab('Beta Catenin Effect on Gene Expression Variation')
+histFig
 
 # Take an SVD of the data. Look at eigenweights and first couple of eigengenes
 svdObj <- fs(exprDat)
-svdDF <- as.data.frame(cbind(1:19, svdObj$d, -1*svdObj$v))
+svdDF <- as.data.frame(cbind(1:19, svdObj$d, svdObj$v))
 colnames(svdDF) <- c('eigenGene', 'percentVariance', 
                      paste('prinComp', 1:19, sep = ''))
 barFig <- ggplot(svdDF, aes(eigenGene, percentVariance)) +
   geom_bar(stat = 'identity') +
-  opts(title = 'Percent Variance Explained by Each Eigengene') +
-  xlab('Eigengene') +
+  opts(title = 'Percent Variance Explained by Each bcatEigengene\n') +
+  xlab('bcatEigengene') +
   ylab('Percent Variance Explained')
 
 eigenFig1 <- ggplot(svdDF, aes(eigenGene, prinComp1)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Eigengene 1 loadings by Sample') +
+  opts(title = 'bcatEigengene 1 loadings by Sample\n') +
   xlab('Samples') +
-  ylab('Eigengene 1 Loadings')
+  ylab('bcatEigengene 1 Loadings')
 
 eigenFig2 <- ggplot(svdDF, aes(eigenGene, prinComp2)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Eigengene 2 loadings by Sample') +
+  opts(title = 'bcatEigengene 2 loadings by Sample\n') +
   xlab('Samples') +
-  ylab('Eigengene 2 Loadings')
+  ylab('bcatEigengene 2 Loadings')
 
-#####
+multiplot(barFig, eigenFig1, eigenFig2, cols = 2)
+
+##########
 # REGRESS OUT THE KNOWN EXPERIMENTAL PERTURBATION EFFECT (TREATMENT)
-#####
+##########
 
 # In order to better understand perturbation-independent latent structure in
 # the data
@@ -91,42 +94,43 @@ colnames(propSSQDF) <- c('eigenGene', 'propTSSQ')
 
 propSSQFig <- ggplot(propSSQDF, aes(eigenGene, propSSQ)) +
   geom_bar(stat = 'identity') +
-  opts(title = 'Proportion of total SSQ Explained by Each Eigengene') +
-  xlab('Eigengene') +
+  opts(title = 'Proportion of total SSQ Explained by Each bcatEigengene\n') +
+  xlab('bcatEigengene') +
   ylab('Proportion of total Sum of Squares Explained')
 
+propSSQFig
 # Visual inspection of this figure suggests that the dependence kernel 
 # should be set as rank 4
 
 svaFit <- sva(exprDat, bio.var = X, n.sv = 4, num.iter = 30, diagnose = FALSE)
-# Now, we'll take a look at the estimated basis vectors 
 
+# Now, we'll take a look at the estimated basis vectors 
 svaDF <- as.data.frame(cbind(1:19, svaFit$svd[[30]]$v))
 colnames(svaDF) <- c('sample', paste('adjPrinComp', 1:4, sep = ''))
 
 adjSVDFig1 <- ggplot(svaDF, aes(sample, adjPrinComp1)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Treatment Adjusted Eigengene 1 Loadings') +
+  opts(title = 'Treatment Adjusted bcatbcatEigengene 1 Loadings') +
   xlab('Sample') +
-  ylab('Eigengene 1 Loading')
+  ylab('bcatbcatEigengene 1 Loading')
 
 adjSVDFig2 <- ggplot(svaDF, aes(sample, adjPrinComp2)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Treatment Adjusted Eigengene 2 Loadings') +
+  opts(title = 'Treatment Adjusted bcatbcatEigengene 2 Loadings') +
   xlab('Sample') +
-  ylab('Eigengene 1 Loading')
+  ylab('bcatbcatEigengene 1 Loading')
 
 adjSVDFig3 <- ggplot(svaDF, aes(sample, adjPrinComp3)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Treatment Adjusted Eigengene 1 Loadings') +
+  opts(title = 'Treatment Adjusted bcatbcatEigengene 1 Loadings') +
   xlab('Sample') +
-  ylab('Eigengene 3 Loading')
+  ylab('bcatEigengene 3 Loading')
 
 adjSVDFig4 <- ggplot(svaDF, aes(sample, adjPrinComp4)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Treatment Adjusted Eigengene 1 Loadings') +
+  opts(title = 'Treatment Adjusted bcatEigengene 1 Loadings') +
   xlab('Sample') +
-  ylab('Eigengene 4 Loading')
+  ylab('bcatEigengene 4 Loading')
   
 adjCompositeFig <- multiplot(adjSVDFig1,
                              adjSVDFig2,
@@ -148,24 +152,52 @@ adjCompositeFig <- multiplot(adjSVDFig1,
 nullProbes <- which(rank(1 - sigObj$pval) < (length(sigObj$pval) * sigObj$pi0))
 u <- fs(exprDat[nullProbes,])
 Z <- model.matrix(~ u$v[,1:4])
+
+# Use the null probes to build a dependence kernel and renormalize the data
 fits2 <- runWorkflow(bCatEnt$cacheDir,
                      workflow = "snm", bio.var = X, adj.var = Z, rm.adj = TRUE) 
 
 dat2 <- exprs(fits2$hgu133a2[[1]])
 u2 <- fs(dat2)
 
+# Visualize the normalized data
 normDF <- as.data.frame(cbind(1:19, u2$v))
 colnames(normDF) <- c('samples', paste('normPrinComp', 1:19, sep = ''))
 
-normFig <- ggplot(normDF, aes(samples, normPrinComp1)) +
-  geom_point(aes(colour = factor(treatment)))
+normFig1 <- ggplot(normDF, aes(samples, normPrinComp1)) +
+  geom_point(aes(colour = factor(treatment))) +
+  opts(title = 'Normalized Data: bcatEigengene 1\n') +
+  xlab('Samples') +
+  ylab('bcatEigengene 1 Loading')
 
+normFig2 <- ggplot(normDF, aes(samples, normPrinComp2)) +
+  geom_point(aes(colour = factor(treatment))) +
+  opts(title = 'Normalized Data: bcatEigengene 2\n') +
+  xlab('Samples') +
+  ylab('bcatEigengene 2 Loading')
 
-par(mfrow=c(1,2))
-hist(sig2$pval)
-u2 <- fs(dat2)
-barplot(u2$d, ylab="Prop Variance Explained by Each Eigengene")
-plot(u2$v[,1], xlab="Samples",ylab="Eigengene 1")
+normFig3 <- ggplot(normDF, aes(samples, normPrinComp3)) +
+  geom_point(aes(colour = factor(treatment))) +
+  opts(title = 'Normalized Data: bcatEigengene 3\n') +
+  xlab('Samples') +
+  ylab('bcatEigengene 3 Loading')
+
+normFig4 <- ggplot(normDF, aes(samples, normPrinComp4)) +
+  geom_point(aes(colour = factor(treatment))) +
+  opts(title = 'Normalized Data: bcatEigengene 4\n') +
+  xlab('Samples') +
+  ylab('bcatEigengene 4 Loading')
+
+multiplot(normFig1, normFig2, normFig3, normFig4, cols = 2)
+
+##########
+# MAKE AN ESET OUT OF THE NORMALIZED DATA
+##########
+
+nBCatEset <- fits2$hgu133a2$eset
+tempPhen <- pData(nBCatEset)
+tempPhen$treatment <- treatment
+pData(nBCatEset) <- tempPhen
 
 
 
