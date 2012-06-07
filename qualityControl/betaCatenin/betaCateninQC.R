@@ -49,21 +49,21 @@ colnames(svdDF) <- c('eigenGene', 'percentVariance',
                      paste('prinComp', 1:19, sep = ''))
 barFig <- ggplot(svdDF, aes(eigenGene, percentVariance)) +
   geom_bar(stat = 'identity') +
-  opts(title = 'Percent Variance Explained by Each bcatEigengene\n') +
-  xlab('bcatEigengene') +
+  opts(title = 'Percent Variance Explained by Each BCatenin Eigengene\n') +
+  xlab('Eigengene') +
   ylab('Percent Variance Explained')
 
 eigenFig1 <- ggplot(svdDF, aes(eigenGene, prinComp1)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'bcatEigengene 1 loadings by Sample\n') +
+  opts(title = 'Prenormalized BCatenin Eigengene 1 Loadings\n') +
   xlab('Samples') +
-  ylab('bcatEigengene 1 Loadings')
+  ylab('Eigengene 1 Loadings')
 
 eigenFig2 <- ggplot(svdDF, aes(eigenGene, prinComp2)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'bcatEigengene 2 loadings by Sample\n') +
+  opts(title = 'Prenormalized BCatenin Eigengene 2 Loadings\n') +
   xlab('Samples') +
-  ylab('bcatEigengene 2 Loadings')
+  ylab('Eigengene 2 Loadings')
 
 multiplot(barFig, eigenFig1, eigenFig2, cols = 2)
 
@@ -94,8 +94,8 @@ colnames(propSSQDF) <- c('eigenGene', 'propTSSQ')
 
 propSSQFig <- ggplot(propSSQDF, aes(eigenGene, propSSQ)) +
   geom_bar(stat = 'identity') +
-  opts(title = 'Proportion of total SSQ Explained by Each bcatEigengene\n') +
-  xlab('bcatEigengene') +
+  opts(title = 'Proportion of total SSQ Explained by Each BCatenin Eigengene\n') +
+  xlab('Eigengene') +
   ylab('Proportion of total Sum of Squares Explained')
 
 propSSQFig
@@ -110,27 +110,27 @@ colnames(svaDF) <- c('sample', paste('adjPrinComp', 1:4, sep = ''))
 
 adjSVDFig1 <- ggplot(svaDF, aes(sample, adjPrinComp1)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Treatment Adjusted bcatbcatEigengene 1 Loadings') +
+  opts(title = 'Treatment "Depleted" BCatenin Eigengene 1 Loadings\n') +
   xlab('Sample') +
-  ylab('bcatbcatEigengene 1 Loading')
+  ylab('Eigengene 1 Loading')
 
 adjSVDFig2 <- ggplot(svaDF, aes(sample, adjPrinComp2)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Treatment Adjusted bcatbcatEigengene 2 Loadings') +
+  opts(title = 'Treatment "Depleted" BCatenin Eigengene 2 Loadings\n') +
   xlab('Sample') +
-  ylab('bcatbcatEigengene 1 Loading')
+  ylab('Eigengene 1 Loading')
 
 adjSVDFig3 <- ggplot(svaDF, aes(sample, adjPrinComp3)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Treatment Adjusted bcatbcatEigengene 1 Loadings') +
+  opts(title = 'Treatment "Depleted" BCatenin Eigengene 3 Loadings\n') +
   xlab('Sample') +
-  ylab('bcatEigengene 3 Loading')
+  ylab('Eigengene 3 Loading')
 
 adjSVDFig4 <- ggplot(svaDF, aes(sample, adjPrinComp4)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Treatment Adjusted bcatEigengene 1 Loadings') +
+  opts(title = 'Treatment "Depleted" BCatenin Eigengene 4 Loadings\n') +
   xlab('Sample') +
-  ylab('bcatEigengene 4 Loading')
+  ylab('Eigengene 4 Loading')
   
 adjCompositeFig <- multiplot(adjSVDFig1,
                              adjSVDFig2,
@@ -166,27 +166,27 @@ colnames(normDF) <- c('samples', paste('normPrinComp', 1:19, sep = ''))
 
 normFig1 <- ggplot(normDF, aes(samples, normPrinComp1)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Normalized Data: bcatEigengene 1\n') +
+  opts(title = 'Normalized Data: BCatenin Eigengene 1\n') +
   xlab('Samples') +
-  ylab('bcatEigengene 1 Loading')
+  ylab('Eigengene 1 Loading')
 
 normFig2 <- ggplot(normDF, aes(samples, normPrinComp2)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Normalized Data: bcatEigengene 2\n') +
+  opts(title = 'Normalized Data: BCatenin Eigengene 2\n') +
   xlab('Samples') +
-  ylab('bcatEigengene 2 Loading')
+  ylab('Eigengene 2 Loading')
 
 normFig3 <- ggplot(normDF, aes(samples, normPrinComp3)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Normalized Data: bcatEigengene 3\n') +
+  opts(title = 'Normalized Data: BCatenin Eigengene 3\n') +
   xlab('Samples') +
-  ylab('bcatEigengene 3 Loading')
+  ylab('Eigengene 3 Loading')
 
 normFig4 <- ggplot(normDF, aes(samples, normPrinComp4)) +
   geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Normalized Data: bcatEigengene 4\n') +
+  opts(title = 'Normalized Data: BCatenin Eigengene 4\n') +
   xlab('Samples') +
-  ylab('bcatEigengene 4 Loading')
+  ylab('Eigengene 4 Loading')
 
 multiplot(normFig1, normFig2, normFig3, normFig4, cols = 2)
 
