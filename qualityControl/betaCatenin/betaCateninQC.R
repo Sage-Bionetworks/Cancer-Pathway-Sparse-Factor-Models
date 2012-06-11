@@ -199,9 +199,50 @@ tempPhen <- pData(nBCatEset)
 tempPhen$treatment <- treatment
 pData(nBCatEset) <- tempPhen
 
+##########
+# RUN BFRM IN THE SPARSE ANOVA MODE
+##########
+
+require(bfrm)
+
+goo <- bfrm(dat2, design = ifelse(treatment == 'bCAT', 1, 0))
+mPPib <- goo@results$mPostPib
+topProbeLogical <- mPPib[ , 2] >= 0.99
+topProbeInd <- grep("TRUE", topProbeLogical)
+
+##########
+# RUN BFRM IN THE FACTOR DISCOVERY MODE
+##########
+
+bCatSparseANOVA <- bfrm(dat2, design = ifelse(treatment == 'bCAT', 1, 0))
+mPPib <- goo@results$mPostPib
+topProbeLogical <- mPPib[ , 2] >= 0.99
+topProbeInd <- grep("TRUE", topProbeLogical)
 
 
+bCatEvolveFactor <- evolve(dat2, 
+                    init = as.numeric(topProbeInd),
+                    priorpsia = 2,
+                    priorpsib = 0.005,
+                    varThreshold = 0.85,
+                    facThreshold = 0.95,
+                    maxVarIter = 30,
+                    minFacVars = 10,
+                    maxFacVars = length(topProbeInd),
+                    maxFacs = 50,
+                    maxVars = length(topProbeInd)
+                    )
 
 
+##########
+# SAVE ENTITIES
+##########
 
+# sparseFactorEnt <- loadEntity('syn317454')
+# sparseFactorEnt <- addObject(sparseFactorEnt, bCatSparseANOVA)
+# sparseFactorEnt <- storeEntity(sparseFactorEnt)
+# 
+# evolveFactorEnt <- loadEntity('syn317456')
+# evolveFactorEnt <- addObject(evolveFactorEnt, bCatEvolveFactor)
+# evolveFactorEnt <- storeEntity(evolveFactorEnt)
 
