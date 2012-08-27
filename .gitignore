@@ -4,8 +4,4 @@
 *.Rproj
 .RData
 testWorkspaceOne.RData
-mG_0051348964.log
-mG_3005134896.log
-mG_3297778954.log
-mG_2633500667.log
-mG_2460878343.log
+*.log
