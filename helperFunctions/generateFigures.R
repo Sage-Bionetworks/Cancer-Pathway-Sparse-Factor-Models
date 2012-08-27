@@ -51,7 +51,7 @@ pcPlotsFig2 <- function(svdObj){
   pcDim <- dim(vMat)[1]
   svdDF <- as.data.frame(cbind(1:pcDim, svdObj$d,
                                svdObj$v))
-  colnames(svdDF) <- c('eigenGene', 'percentVariance',
+  colnames(svdDF) <- c('sample', 'percentVariance',
                       paste('PC', 1:pcDim, sep = ''))
   barPlot <- ggplot(svdDF, aes(eigenGene, percentVariance)) +
     geom_bar(stat = 'identity') +
