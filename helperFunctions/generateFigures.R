@@ -106,8 +106,12 @@ subSVDFig4 <- function(svaFit){
                                svaFit$svd[[svaFit$num.iter]]$v))
   colnames(svaDF) <- c('sample', 'treatment', paste('subtractedPC', 
                                        1:svaFit$n.sv, sep = ''))
+  transform(svaDF, sample = as.numeric(sample), 
+            subtractedPC1 = as.numeric(subtractedPC1),
+            subtractedPC2 = as.numeric(subtractedPC2))
   meltDF <- melt(svaDF, id = c('sample', 'treatment'))
   colnames(meltDF)[3] <- 'pc'
+  meltDF <- meltDF[order(meltDF[ , 2]), ]
   subFacetPlot <- qplot(sample, value, data = meltDF) +
     facet_grid(. ~ pc) +
     geom_point(aes(colour = factor(treatment)))
@@ -134,4 +138,5 @@ subSVDFig4 <- function(svaFit){
 #                              adjSVDFig2,
 #                              cols = 2)
 
+# data[order(data[, 2]), ]
 
