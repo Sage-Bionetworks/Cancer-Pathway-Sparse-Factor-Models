@@ -37,7 +37,7 @@ multiplot <- function(..., plotlist = NULL, cols) {
 ## First figure function
 ## p-value distribution of transcripts by perturbation
 pvalHistFig1 <- function(sigObj){
-  require(ggplot)
+  require(ggplot2)
   histFig <- qplot(sigObj$pval, geom = 'histogram') + 
     opts(title = 'p-value Distribution of Transcripts\n') +
     xlab('\np-values') +
@@ -48,7 +48,9 @@ pvalHistFig1 <- function(sigObj){
 ## Second figure function
 ## Eigengene plots on data prior to supervised normalization
 pcPlotsFig2 <- function(svdObj){
-  require(ggplot)
+  require(ggplot2)
+  require(reshape)
+  
   dMat <- svdObj[[1]]
   vMat <- svdObj[[3]]
   pcDim <- dim(vMat)[1]
@@ -56,38 +58,28 @@ pcPlotsFig2 <- function(svdObj){
                                svdObj$v))
   colnames(svdDF) <- c('sample', 'percentVariance',
                       paste('PC', 1:pcDim, sep = ''))
-  barPlot <- ggplot(svdDF, aes(eigenGene, percentVariance)) +
+  barPlot <- ggplot(svdDF, aes(sample, percentVariance)) +
     geom_bar(stat = 'identity') +
     opts(title = 'Percent Variance Explained by Each Experimental Eigengene\n') +
     xlab('\nEigengene') +
     ylab('Percent Variance Explained\n')
   
-  eigenPlot1 <- ggplot(svdDF, aes(eigenGene, PC1)) +
-    geom_point(aes(colour = factor(treatment))) +
-    opts(title = "Loadings (before Supervised Norm.)\n") +
-    xlab('\nSamples') +
-    ylab('Eigengene 1 Loadings\n')
+  svdDF2 <- cbind(svdDF[ , 1], treatment, svdDF[ , 3:dim(svdDF)[2]])
+  colnames(svdDF2)[1] <- 'sample'
   
-  eigenPlot2 <- ggplot(svdDF, aes(eigenGene, PC2)) +
+  meltDF <- melt(svdDF2, id = c('sample', 'treatment'))
+  colnames(meltDF)[3] <- 'pc'
+  smeltDF <- subset(meltDF, pc %in% c('PC1', 'PC2', 'PC3', 'PC4'))
+
+  facetPcPlot <- qplot(sample, value, data = smeltDF) +
+    facet_grid(. ~ pc) +
     geom_point(aes(colour = factor(treatment))) +
-    opts(title = "Loadings (before Supervised Norm.)\n") +
-    xlab('\nSamples') +
-    ylab('Eigengene 2 Loadings\n')
-  
-  eigenPlot3 <- ggplot(svdDF, aes(eigenGene, PC3)) +
-    geom_point(aes(colour = factor(treatment))) +
-    opts(title = "Loadings (before Supervised Norm.)\n") +
-    xlab('\nSamples') +
-    ylab('Eigengene 3 Loadings\n')
-  
-  combinedPlot <- multiplot(barPlot, eigenPlot1, eigenPlot2,
-                            eigenPlot3, cols = 2)
+    opts(title = 'Eigenvalues by Sample\n') +
+    xlab('\nSample') +
+    ylab('Eigenvalue\n')
   
   allFigs <- list('barPlot' = barPlot, 
-                  'eigenPlot1' = eigenPlot1,
-                  'eigenPlot2' = eigenPlot2,
-                  'eigenPlot3' = eigenPlot3,
-                  'combinedPlot' = combinedPlot)
+                  'facetPlot' = facetPcPlot)
 }
 
 
