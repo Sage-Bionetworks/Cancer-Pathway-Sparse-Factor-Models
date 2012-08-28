@@ -37,37 +37,15 @@ treatment <- ifelse(grepl('E2F3', list.files(e2f3Ent$cacheDir)), "GFP", "E2F3")
 X <- model.matrix(~ factor(treatment))
 sigObj <- calcSig(exprDat, X)
 
-# Generate a histogram
-histFig <- qplot(sigObj$pval, geom = 'histogram') + 
-  opts(title = 'P value Distribution of Transcripts\n') +
-  xlab('\np Values') +
-  ylab('E2F3 Effect on Gene Expression Variation\n')
-histFig
+##########
+# GENERATE FIGURES ON DATA PRIOR TO SUPERVISED NORMALIZATION
+##########
 
-# Take an SVD of the data. Look at eigenweights and first couple of eigengenes
+varBarPlot <- pvalHistFig1(sigObj)
+
 svdObj <- fs(exprDat)
-svdDF <- as.data.frame(cbind(1:19, svdObj$d, svdObj$v))
-colnames(svdDF) <- c('eigenGene', 'percentVariance', 
-                     paste('prinComp', 1:19, sep = ''))
-barFig <- ggplot(svdDF, aes(eigenGene, percentVariance)) +
-  geom_bar(stat = 'identity') +
-  opts(title = 'Percent Variance Explained by Each E2F3 Eigengene\n') +
-  xlab('\nEigengene') +
-  ylab('Percent Variance Explained\n')
 
-eigenFig1 <- ggplot(svdDF, aes(eigenGene, prinComp1)) +
-  geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Prenormalized E2F3 Eigengene 1 Loadings\n') +
-  xlab('\nSamples') +
-  ylab('Eigengene 1 Loadings\n')
-
-eigenFig2 <- ggplot(svdDF, aes(eigenGene, prinComp2)) +
-  geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Prenormalized E2F3 Eigengene 2 Loadings\n') +
-  xlab('\nSamples') +
-  ylab('Eigengene 2 Loadings\n')
-
-multiplot(barFig, eigenFig1, eigenFig2, cols = 2)
+initPcPlots <- pcPlotsFig2(svdObj)
 
 ##########
 # REGRESS OUT THE KNOWN EXPERIMENTAL PERTURBATION EFFECT (TREATMENT)
@@ -89,16 +67,10 @@ tSSQ_dat <- sum(datC^2)
 residuals <- exprDat - t(X %*% solve(t(X) %*% X) %*% t(X) %*% t(exprDat))
 rSSQ_dat <- sum(residuals^2)
 u <- fs(residuals)
-propSSQ <- round(rSSQ_dat * u$d,3) / tSSQ_dat
-propSSQDF <- as.data.frame(cbind(1:19, propSSQ))
-colnames(propSSQDF) <- c('eigenGene', 'propTSSQ')
+propSSQ <- round(rSSQ_dat * u$d, 3) / tSSQ_dat
 
-propSSQFig <- ggplot(propSSQDF, aes(eigenGene, propSSQ)) +
-  geom_bar(stat = 'identity') +
-  opts(title = 'Proportion of total SSQ Explained by Each E2F3 Eigengene\n') +
-  xlab('\nEigengene') +
-  ylab('Proportion of total Sum of Squares Explained\n')
-propSSQFig
+# Generate a figure
+propSSQBarPlot <- propSSQFig3(propSSQ)
 
 # Visual inspection of this figure suggests that the dependence kernel 
 # should be set as rank 2

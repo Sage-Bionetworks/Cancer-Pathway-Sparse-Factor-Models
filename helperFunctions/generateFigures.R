@@ -82,6 +82,16 @@ pcPlotsFig2 <- function(svdObj){
                   'facetPlot' = facetPcPlot)
 }
 
+## Third figure function
+## Visualizing the proportion of SSQ explained by each perturbation eigengene
 
-# 
-# multiplot(barFig, eigenFig1, eigenFig2, cols = 2)
+propSSQFig3 <- function(propSSQ){
+  propSSQDF <- as.data.frame(cbind(1:length(treatment), propSSQ))
+  colnames(propSSQDF) <- c('eigenGene', 'propSSQ')
+  
+  propSSQPlot <- ggplot(propSSQDF, aes(eigenGene, propSSQ)) +
+    geom_bar(stat = 'identity') +
+    opts(title = 'Proportion of total SSQ\n') +
+    xlab('\nEigengene') +
+    ylab('Proportion of total Sum of Squares Explained\n')
+}
