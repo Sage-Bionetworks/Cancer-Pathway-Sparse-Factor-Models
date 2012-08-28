@@ -41,10 +41,12 @@ sigObj <- calcSig(exprDat, X)
 # GENERATE FIGURES ON DATA PRIOR TO SUPERVISED NORMALIZATION
 ##########
 
+# custom function from generateFigures.R
 varBarPlot <- pvalHistFig1(sigObj)
 
 svdObj <- fs(exprDat)
 
+# custom function from generateFigures.R
 initPcPlots <- pcPlotsFig2(svdObj)
 
 ##########

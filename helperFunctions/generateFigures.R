@@ -95,3 +95,43 @@ propSSQFig3 <- function(propSSQ){
     xlab('\nEigengene') +
     ylab('Proportion of total Sum of Squares Explained\n')
 }
+
+
+## Fourth figure function
+## Subtracting treatment effect from the data to understand whether there are
+## other latent variables influencing the data
+
+subSVDFig4 <- function(svaFit){
+  svaDF <- as.data.frame(cbind(1:length(treatment), treatment,
+                               svaFit$svd[[svaFit$num.iter]]$v))
+  colnames(svaDF) <- c('sample', 'treatment', paste('subtractedPC', 
+                                       1:svaFit$n.sv, sep = ''))
+  meltDF <- melt(svaDF, id = c('sample', 'treatment'))
+  colnames(meltDF)[3] <- 'pc'
+  subFacetPlot <- qplot(sample, value, data = meltDF) +
+    facet_grid(. ~ pc) +
+    geom_point(aes(colour = factor(treatment)))
+}
+
+
+
+# svaDF <- as.data.frame(cbind(1:19, svaFit$svd[[30]]$v))
+# colnames(svaDF) <- c('sample', paste('adjPrinComp', 1:2, sep = ''))
+# 
+# adjSVDFig1 <- ggplot(svaDF, aes(sample, adjPrinComp1)) +
+#   geom_point(aes(colour = factor(treatment))) +
+#   opts(title = 'Treatment "Depleted" E2F3 Eigengene 1 Loadings\n') +
+#   xlab('\nSample') +
+#   ylab('Eigengene 1 Loading\n')
+# 
+# adjSVDFig2 <- ggplot(svaDF, aes(sample, adjPrinComp2)) +
+#   geom_point(aes(colour = factor(treatment))) +
+#   opts(title = 'Treatment "Depleted" E2F3 Eigengene 2 Loadings\n') +
+#   xlab('\nSample') +
+#   ylab('Eigengene 2 Loading\n')
+# 
+# adjCompositeFig <- multiplot(adjSVDFig1,
+#                              adjSVDFig2,
+#                              cols = 2)
+
+
