@@ -4,6 +4,7 @@
 ## Sage Bionetworks
 ## erich.huang@sagebase.org
 
+
 ## Multiplot helper function
 multiplot <- function(..., plotlist = NULL, cols) {
   require(grid)
@@ -36,6 +37,7 @@ multiplot <- function(..., plotlist = NULL, cols) {
 ## First figure function
 ## p-value distribution of transcripts by perturbation
 pvalHistFig1 <- function(sigObj){
+  require(ggplot)
   histFig <- qplot(sigObj$pval, geom = 'histogram') + 
     opts(title = 'p-value Distribution of Transcripts\n') +
     xlab('\np-values') +
@@ -46,6 +48,7 @@ pvalHistFig1 <- function(sigObj){
 ## Second figure function
 ## Eigengene plots on data prior to supervised normalization
 pcPlotsFig2 <- function(svdObj){
+  require(ggplot)
   dMat <- svdObj[[1]]
   vMat <- svdObj[[3]]
   pcDim <- dim(vMat)[1]
