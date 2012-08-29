@@ -56,20 +56,7 @@ initPcPlots <- pcPlotsFig2(svdObj)
 # In order to better understand perturbation-independent latent structure in
 # the data
 
-# Calculate the total sums of squares of the data.
-datM <- rowMeans(exprDat)
-datC <- sweep(exprDat, 1, datM)
-tSSQ_dat <- sum(datC^2)
-
-# Now we want to remove the effects of the biological treatment
-# on the data.  The reason is we are interested in identifying 
-# any latent structure. In order to do so we calculate the
-# residual sums of squares and take a singular value decomposition
-# of the data.  Note the singular values are weighted to sum to 1.
-residuals <- exprDat - t(X %*% solve(t(X) %*% X) %*% t(X) %*% t(exprDat))
-rSSQ_dat <- sum(residuals^2)
-u <- fs(residuals)
-propSSQ <- round(rSSQ_dat * u$d, 3) / tSSQ_dat
+propSSQ <- removeExpEffect(exprDat, X)
 
 # Generate a figure
 propSSQBarPlot <- propSSQFig3(propSSQ)
@@ -78,26 +65,8 @@ propSSQBarPlot <- propSSQFig3(propSSQ)
 # should be set as rank 2
 svaFit <- sva(exprDat, bio.var = X, n.sv = 2, num.iter = 30, diagnose = FALSE)
 
-# Now, we'll take a look at the estimated basis vectors 
-svaDF <- as.data.frame(cbind(1:19, svaFit$svd[[30]]$v))
-colnames(svaDF) <- c('sample', paste('adjPrinComp', 1:2, sep = ''))
-
-adjSVDFig1 <- ggplot(svaDF, aes(sample, adjPrinComp1)) +
-  geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Treatment "Depleted" E2F3 Eigengene 1 Loadings\n') +
-  xlab('\nSample') +
-  ylab('Eigengene 1 Loading\n')
-
-adjSVDFig2 <- ggplot(svaDF, aes(sample, adjPrinComp2)) +
-  geom_point(aes(colour = factor(treatment))) +
-  opts(title = 'Treatment "Depleted" E2F3 Eigengene 2 Loadings\n') +
-  xlab('\nSample') +
-  ylab('Eigengene 2 Loading\n')
-
-adjCompositeFig <- multiplot(adjSVDFig1,
-                             adjSVDFig2,
-                             cols = 2)
-
+# Now, we'll visualize the estimated basis vectors 
+subtractedPCPlot <- subSVDFig4(svaFit)
 
 # The plots suggest that even with the experimental perturbation effect
 # removed there is still latent structure that correlates with the 
@@ -109,17 +78,7 @@ adjCompositeFig <- multiplot(adjSVDFig1,
 # an unweighted SVD of the data restricted to the first pi0 largest ranked 
 # (by p values) transcripts.
 
-# Get the null probes
-nullProbes <- which(rank(1 - sigObj$pval) < (length(sigObj$pval) * sigObj$pi0))
-u <- fs(exprDat[nullProbes,])
-Z <- model.matrix(~ u$v[,1:4])
-
-# Use the null probes to build a dependence kernel and renormalize the data
-fits2 <- runWorkflow(e2f3Ent$cacheDir,
-                     workflow = "snm", bio.var = X, adj.var = Z, rm.adj = TRUE) 
-
-dat2 <- exprs(fits2$hgu133plus2[[1]])
-u2 <- fs(dat2)
+nullNorm <- nullProbeNorm(sigObj, 4, e2f3Ent)
 
 # Visualize the normalized data
 normDF <- as.data.frame(cbind(1:19, u2$v))

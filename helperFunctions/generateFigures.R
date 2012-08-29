@@ -102,8 +102,8 @@ propSSQFig3 <- function(propSSQ){
 ## other latent variables influencing the data
 
 subSVDFig4 <- function(svaFit){
-  svaDF <- as.data.frame(cbind(1:length(treatment), treatment,
-                               svaFit$svd[[svaFit$num.iter]]$v))
+  svaDF <- data.frame(1:length(treatment), treatment,
+                               svaFit$svd[[svaFit$num.iter]]$v)
   colnames(svaDF) <- c('sample', 'treatment', paste('subtractedPC', 
                                        1:svaFit$n.sv, sep = ''))
   transform(svaDF, sample = as.numeric(sample), 
@@ -114,29 +114,31 @@ subSVDFig4 <- function(svaFit){
   meltDF <- meltDF[order(meltDF[ , 2]), ]
   subFacetPlot <- qplot(sample, value, data = meltDF) +
     facet_grid(. ~ pc) +
-    geom_point(aes(colour = factor(treatment)))
+    geom_point(aes(colour = factor(treatment))) +
+    opts(title = 'Subtraction of Biological Effect\n') +
+    xlab('\nSample') +
+    ylab('Eigenvalue\n')
 }
 
 
+## Fifth figure function
+## Visualizing the data after normalizing out null probe latent structure
 
-# svaDF <- as.data.frame(cbind(1:19, svaFit$svd[[30]]$v))
-# colnames(svaDF) <- c('sample', paste('adjPrinComp', 1:2, sep = ''))
-# 
-# adjSVDFig1 <- ggplot(svaDF, aes(sample, adjPrinComp1)) +
-#   geom_point(aes(colour = factor(treatment))) +
-#   opts(title = 'Treatment "Depleted" E2F3 Eigengene 1 Loadings\n') +
-#   xlab('\nSample') +
-#   ylab('Eigengene 1 Loading\n')
-# 
-# adjSVDFig2 <- ggplot(svaDF, aes(sample, adjPrinComp2)) +
-#   geom_point(aes(colour = factor(treatment))) +
-#   opts(title = 'Treatment "Depleted" E2F3 Eigengene 2 Loadings\n') +
-#   xlab('\nSample') +
-#   ylab('Eigengene 2 Loading\n')
-# 
-# adjCompositeFig <- multiplot(adjSVDFig1,
-#                              adjSVDFig2,
-#                              cols = 2)
+nullSVDFig5 <- function(u2){
+  nullNormDF <- data.frame(1:length(treatment), treatment, u2$v)
+  colnames(nullNormDF) <- c('sample', 
+                            'treatment',
+                            paste('nullNormPC', 1:length(treatment), sep = ''))
+  meltDF <- melt(nullNormDF, id = c('sample', 'treatment'))
+  colnames(meltDF)[2:3] <- c('treatment', 'pc')
+  smeltDF <- subset(meltDF, pc %in% c('nullNormPC1', 'nullNormPC2',
+                                      'nullNormPC3', 'nullNormPC4'))
+  facetPcPlot <- qplot(sample, value, data = smeltDF) +
+    facet_grid(. ~ pc) +
+    geom_point(aes(colour = factor(treatment))) +
+    opts(title = 'Eigenvalues by Sample\n') +
+    xlab('\nSample') +
+    ylab('Eigenvalue\n')
+}
 
-# data[order(data[, 2]), ]
 
