@@ -1,4 +1,4 @@
-# e2f3QC.R
+# qcE2F3.R
 
 # Erich S. Huang
 # Sage Bionetworks
@@ -86,7 +86,7 @@ nullNormFig <- nullSVDFig5(nullNorm$uMatrix)
 # MAKE AN ESET OUT OF THE NORMALIZED DATA
 ##########
 
-nE2F3Eset <- fits2$hgu133plus2$eset
+nE2F3Eset <- nullNorm$newFit$hgu133plus2$eset
 tempPhen <- pData(nE2F3Eset)
 tempPhen$treatment <- treatment
 pData(nE2F3Eset) <- tempPhen
