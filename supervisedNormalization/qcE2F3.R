@@ -92,36 +92,38 @@ tempPhen$treatment <- treatment
 pData(nE2F3Eset) <- tempPhen
 
 ##########
-# RUN BFRM IN THE SPARSE ANOVA MODE
+# UPLOAD TO SYNAPSE
 ##########
 
-require(bfrm)
+sNormProjEnt <- loadEntity('syn1091237')
+sNormProjEnt <- addObject(sNormProjEnt, nE2F3Eset)
+sNormProjEnt <- storeEntity(sNormProjEnt)
 
-e2f3Anova <- bfrm(dat2, design = ifelse(treatment == 'E2F3', 1, 0))
-mPPib <- e2f3Anova@results$mPostPib
-topProbeLogical <- mPPib[ , 2] >= 0.99
-topProbeInd <- grep("TRUE", topProbeLogical)
+# ##########
+# # RUN BFRM IN THE SPARSE ANOVA MODE
+# ##########
+# 
+# require(bfrm)
+# 
+# e2f3Anova <- bfrm(dat2, design = ifelse(treatment == 'E2F3', 1, 0))
+# mPPib <- e2f3Anova@results$mPostPib
+# topProbeLogical <- mPPib[ , 2] >= 0.99
+# topProbeInd <- grep("TRUE", topProbeLogical)
+# 
+# ##########
+# # RUN BFRM IN THE FACTOR DISCOVERY MODE
+# ##########
+# 
+# bCatEvolveFactor <- evolve(dat2, 
+#                            init = as.numeric(topProbeInd),
+#                            priorpsia = 2,
+#                            priorpsib = 0.005,
+#                            varThreshold = 0.85,
+#                            facThreshold = 0.95,
+#                            maxVarIter = 30,
+#                            minFacVars = 10,
+#                            maxFacVars = length(topProbeInd),
+#                            maxFacs = 50,
+#                            maxVars = length(topProbeInd)
+#                            )
 
-##########
-# RUN BFRM IN THE FACTOR DISCOVERY MODE
-##########
-
-bCatEvolveFactor <- evolve(dat2, 
-                           init = as.numeric(topProbeInd),
-                           priorpsia = 2,
-                           priorpsib = 0.005,
-                           varThreshold = 0.85,
-                           facThreshold = 0.95,
-                           maxVarIter = 30,
-                           minFacVars = 10,
-                           maxFacVars = length(topProbeInd),
-                           maxFacs = 50,
-                           maxVars = length(topProbeInd)
-                           )
-
-
-##########
-# SAVE ENTITIES
-##########
-
-# See syn346115 for result objects
