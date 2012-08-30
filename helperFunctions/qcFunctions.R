@@ -32,18 +32,3 @@ nullProbeNorm <- function(sigObj, pcs, expEntity){
   u2 <- fs(dat2)
   nullNorm <- list('uMatrix' = u2, 'newFit' = fits2)
 }
-
-
-
-
-# # Get the null probes
-# nullProbes <- which(rank(1 - sigObj$pval) < (length(sigObj$pval) * sigObj$pi0))
-# u <- fs(exprDat[nullProbes, ])
-# Z <- model.matrix(~ u$v[ , 1:4])
-# 
-# # Use the null probes to build a dependence kernel and renormalize the data
-# fits2 <- runWorkflow(e2f3Ent$cacheDir,
-#                      workflow = "snm", bio.var = X, adj.var = Z, rm.adj = TRUE) 
-# 
-# dat2 <- exprs(fits2$hgu133plus2[[1]])
-# u2 <- fs(dat2)

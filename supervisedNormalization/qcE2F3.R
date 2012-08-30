@@ -33,7 +33,7 @@ fits <- runWorkflow(e2f3Ent$cacheDir, workflow = 'snm')
 exprDat <- exprs(fits$hgu133plus2[[1]])
 
 # Create a treatment model matrix  (using the filename annotations)
-treatment <- ifelse(grepl('E2F3', list.files(e2f3Ent$cacheDir)), "GFP", "E2F3")
+treatment <- ifelse(grepl('E2F3', list.files(e2f3Ent$cacheDir)), "E2F3", "GFP")
 X <- model.matrix(~ factor(treatment))
 sigObj <- calcSig(exprDat, X)
 
@@ -97,7 +97,11 @@ pData(nE2F3Eset) <- tempPhen
 
 sNormProjEnt <- loadEntity('syn1091237')
 sNormProjEnt <- addObject(sNormProjEnt, nE2F3Eset)
+sNormProjEnt$properties$parentId <- 'syn1091010'
 sNormProjEnt <- storeEntity(sNormProjEnt)
+
+## CURATED & NORMALIZED E2F3 ESET STORED AS
+
 
 # ##########
 # # RUN BFRM IN THE SPARSE ANOVA MODE
