@@ -36,7 +36,9 @@ generateFacs <- function(esetId){
                       maxVars=length(topProbeInd))
   
   ## UPLOAD BACK INTO FACTOR LIBRARY PROJECT -- bfrmResult objects STUDY
-  newEnt <- createEntity(Data(list(name=paste(annotValue(normEnt, "perturbation"), " perturbation - bfrmResult object", sep=""), parentId="syn362376")))
+  newEnt <- 
+    createEntity(Data(list(name=paste(annotValue(normEnt, "treatmentString"), 
+                                              " perturbation - bfrmResult object", sep=""), parentId="syn362376")))
   newEnt <- addObject(newEnt, bfrmRes)
   newEnt <- addObject(newEnt, evolveRes)
   newEnt <- storeEntity(newEnt)

@@ -98,6 +98,7 @@ pData(nE2F3Eset) <- tempPhen
 sNormProjEnt <- loadEntity('syn1091237')
 sNormProjEnt <- addObject(sNormProjEnt, nE2F3Eset)
 sNormProjEnt$properties$parentId <- 'syn1091010'
+annotations(sNormProjEnt, 'treatmentString') <- 'E2F3'
 sNormProjEnt <- storeEntity(sNormProjEnt)
 
 ## CURATED & NORMALIZED E2F3 ESET STORED AS
