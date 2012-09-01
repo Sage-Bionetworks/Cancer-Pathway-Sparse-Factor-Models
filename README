@@ -1,6 +1,6 @@
-##################################################
-## CONTRIBUTORS: BRIAN M. BOT & ERICH S. HUANG
-##################################################
+#############################################################
+## CONTRIBUTORS: BRIAN M. BOT, BRIG MECHAM & ERICH S. HUANG
+#############################################################
 
 DESCRIPTION:
 We hope to create a resource that leverages experimental perturbation data (ectopic expression of oncogenes in primary cells, and therapeutic perturbation of cancer cell lines) for generating factor models that are easily projected into new datasets. The goal is two-fold. (1) Use controlled experiments to enhance signal-to-noise in high-dimensional genomic data, and use these 'experimentally-annotated' models to better understand noisy in vivo datasets through the prism of experimentally-generated contexts. (2) Apply the modular framework of Bayesian factor models to decompose complex biomarkers into constituent 'modules' intermediate between noisy single gene level analyses and unwieldy signatures that lack contextual flexibility. 
