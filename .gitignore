@@ -4,4 +4,4 @@
 .RData
 testWorkspaceOne.RData
 *.log
-.Rhistory
+*.Rhistory

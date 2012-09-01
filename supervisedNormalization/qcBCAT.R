@@ -86,49 +86,19 @@ nullNormFig <- nullSVDFig5(nullNorm$uMatrix)
 # MAKE AN ESET OUT OF THE NORMALIZED DATA
 ##########
 
-nBCATEset <- nullNorm$newFit$hgu133a2$eset
-tempPhen <- pData(nE2F3Eset)
+nBCatEset <- nullNorm$newFit$hgu133a2$eset
+tempPhen <- pData(nBCatEset)
 tempPhen$treatment <- treatment
-pData(nBCATEset) <- tempPhen
+pData(nBCatEset) <- tempPhen
 
 ##########
 # UPLOAD TO SYNAPSE
 ##########
 
-sNormProjEnt <- loadEntity('syn1091237')
-sNormProjEnt <- addObject(sNormProjEnt, nE2F3Eset)
-sNormProjEnt$properties$parentId <- 'syn1091010'
-annotations(sNormProjEnt, 'treatmentString') <- 'E2F3'
-sNormProjEnt <- storeEntity(sNormProjEnt)
-
-## CURATED & NORMALIZED E2F3 ESET STORED AS
-
-
-# ##########
-# # RUN BFRM IN THE SPARSE ANOVA MODE
-# ##########
-# 
-# require(bfrm)
-# 
-# e2f3Anova <- bfrm(dat2, design = ifelse(treatment == 'E2F3', 1, 0))
-# mPPib <- e2f3Anova@results$mPostPib
-# topProbeLogical <- mPPib[ , 2] >= 0.99
-# topProbeInd <- grep("TRUE", topProbeLogical)
-# 
-# ##########
-# # RUN BFRM IN THE FACTOR DISCOVERY MODE
-# ##########
-# 
-# bCatEvolveFactor <- evolve(dat2, 
-#                            init = as.numeric(topProbeInd),
-#                            priorpsia = 2,
-#                            priorpsib = 0.005,
-#                            varThreshold = 0.85,
-#                            facThreshold = 0.95,
-#                            maxVarIter = 30,
-#                            minFacVars = 10,
-#                            maxFacVars = length(topProbeInd),
-#                            maxFacs = 50,
-#                            maxVars = length(topProbeInd)
-#                            )
+sNormProjEnt <- getEntity('syn1091010')
+sNormBCatEnt <- Data(list(name = "Supervised Normalized BCat Perturbation Data",
+                          parentId = propertyValue(sNormProjEnt, "id")))
+annotValue(sNormBCatEnt, 'treatmentString') <- 'BCAT'
+sNormBCatEnt <- addObject(sNormBCatEnt, nBCatEset)
+sNormBCatEnt <- storeEntity(sNormBCatEnt)
 
