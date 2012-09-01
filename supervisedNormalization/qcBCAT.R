@@ -86,10 +86,10 @@ nullNormFig <- nullSVDFig5(nullNorm$uMatrix)
 # MAKE AN ESET OUT OF THE NORMALIZED DATA
 ##########
 
-nE2F3Eset <- nullNorm$newFit$hgu133plus2$eset
+nBCATEset <- nullNorm$newFit$hgu133a2$eset
 tempPhen <- pData(nE2F3Eset)
 tempPhen$treatment <- treatment
-pData(nE2F3Eset) <- tempPhen
+pData(nBCATEset) <- tempPhen
 
 ##########
 # UPLOAD TO SYNAPSE
