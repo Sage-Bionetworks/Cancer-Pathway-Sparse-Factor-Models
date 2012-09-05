@@ -5,6 +5,10 @@
 ## Seattle, Washington
 ## erich.huang@sagebase.org
 
+## Required libraries
+require(synapseClient)
+require(bfrm)
+require(doMC)
 
 ## Pull in the IDs of all normalized studies
 normalizedEsets <- 
@@ -12,4 +16,8 @@ normalizedEsets <-
 
 childIDs <- normalizedEsets[ , 2]
 
-bfrmList <- lapply(testIDs, generateFacs)
+## Parallelized generation of BFRM objects
+registerDoMC()
+numProc <- getDoParWorkers()
+
+bfrmList <- mclapply(childIDs, generateFacs)
