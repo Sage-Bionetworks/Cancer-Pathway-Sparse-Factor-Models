@@ -42,12 +42,12 @@ sigObj <- calcSig(exprDat, X)
 ##########
 
 # custom function from generateFigures.R
-varBarPlot <- pvalHistFig1(sigObj)
+varBarPlot <- qcFigureA(sigObj)
 
 svdObj <- fs(exprDat)
 
 # custom function from generateFigures.R
-initPcPlots <- pcPlotsFig2(svdObj)
+initPcPlots <- qcFigureB(svdObj)
 
 ##########
 # REGRESS OUT THE KNOWN EXPERIMENTAL PERTURBATION EFFECT (TREATMENT)
@@ -59,14 +59,14 @@ initPcPlots <- pcPlotsFig2(svdObj)
 propSSQ <- removeExpEffect(exprDat, X)
 
 # Generate a figure
-propSSQBarPlot <- propSSQFig3(propSSQ)
+propSSQBarPlot <- qcFigureC(propSSQ)
 
 # Visual inspection of this figure suggests that the dependence kernel 
 # should be set as rank 2
 svaFit <- sva(exprDat, bio.var = X, n.sv = 2, num.iter = 30, diagnose = FALSE)
 
 # Now, we'll visualize the estimated basis vectors 
-subtractedPCPlot <- subSVDFig4(svaFit)
+subtractedPCPlot <- qcFigureD(svaFit)
 
 # The plots suggest that even with the experimental perturbation effect
 # removed there is still latent structure that correlates with the 
@@ -80,7 +80,7 @@ subtractedPCPlot <- subSVDFig4(svaFit)
 nullNorm <- nullProbeNorm(sigObj, 4, e2f3Ent)
 
 # Visualize the normalized data
-nullNormFig <- nullSVDFig5(nullNorm$uMatrix)
+nullNormFig <- qcFigureE(nullNorm$uMatrix)
 
 ##########
 # MAKE AN ESET OUT OF THE NORMALIZED DATA

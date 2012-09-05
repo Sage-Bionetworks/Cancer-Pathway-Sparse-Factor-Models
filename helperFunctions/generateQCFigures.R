@@ -1,42 +1,13 @@
-## generateFigures.R
+## generateQCFigures.R
 
 ## Erich S. Huang
 ## Sage Bionetworks
 ## erich.huang@sagebase.org
 
 
-## Multiplot helper function
-multiplot <- function(..., plotlist = NULL, cols) {
-  require(grid)
-  
-  # Make a list from the ... arguments and plotlist
-  plots <- c(list(...), plotlist)
-  
-  numPlots = length(plots)
-  
-  # Make the panel
-  plotCols = cols     # Number of columns of plots
-  plotRows = ceiling(numPlots/plotCols)      # Number of rows needed
-                                             # calculated from # of cols
-  
-  # Set up the page
-  grid.newpage()
-  pushViewport(viewport(layout = grid.layout(plotRows, plotCols)))
-  vplayout <- function(x, y)
-    viewport(layout.pos.row = x, layout.pos.col = y)
-  
-  # Make each plot, in the correct location
-  for (i in 1:numPlots) {
-    curRow = ceiling(i/plotCols)
-    curCol = (i-1) %% plotCols + 1
-    print(plots[[i]], vp = vplayout(curRow, curCol ))
-  }
-  
-}
-
 ## First figure function
 ## p-value distribution of transcripts by perturbation
-pvalHistFig1 <- function(sigObj){
+qcFigureA <- function(sigObj){
   require(ggplot2)
   histFig <- qplot(sigObj$pval, geom = 'histogram') + 
     opts(title = 'p-value Distribution of Transcripts\n') +
@@ -47,7 +18,7 @@ pvalHistFig1 <- function(sigObj){
 
 ## Second figure function
 ## Eigengene plots on data prior to supervised normalization
-pcPlotsFig2 <- function(svdObj){
+qcFigureB <- function(svdObj){
   require(ggplot2)
   require(reshape)
   
@@ -85,7 +56,7 @@ pcPlotsFig2 <- function(svdObj){
 ## Third figure function
 ## Visualizing the proportion of SSQ explained by each perturbation eigengene
 
-propSSQFig3 <- function(propSSQ){
+qcFigureC <- function(propSSQ){
   propSSQDF <- as.data.frame(cbind(1:length(treatment), propSSQ))
   colnames(propSSQDF) <- c('eigenGene', 'propSSQ')
   
@@ -101,7 +72,7 @@ propSSQFig3 <- function(propSSQ){
 ## Subtracting treatment effect from the data to understand whether there are
 ## other latent variables influencing the data
 
-subSVDFig4 <- function(svaFit){
+qcFigureD <- function(svaFit){
   svaDF <- data.frame(1:length(treatment), treatment,
                                svaFit$svd[[svaFit$num.iter]]$v)
   colnames(svaDF) <- c('sample', 'treatment', paste('subtractedPC', 
@@ -124,7 +95,7 @@ subSVDFig4 <- function(svaFit){
 ## Fifth figure function
 ## Visualizing the data after normalizing out null probe latent structure
 
-nullSVDFig5 <- function(u2){
+qcFigureE <- function(u2){
   nullNormDF <- data.frame(1:length(treatment), treatment, u2$v)
   colnames(nullNormDF) <- c('sample', 
                             'treatment',
