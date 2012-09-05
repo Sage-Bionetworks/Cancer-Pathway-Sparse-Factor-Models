@@ -17,13 +17,13 @@ removeExpEffect <- function(exprDat, X){
 }
 
 ## Use 'null probes' to build a dependence kernel and renormalize the data
-nullProbeNorm <- function(rawEnt, sigObj, pcs, expEntity){
+nullProbeNorm <- function(sigObj, pcs, expEntity){
   nullProbes <- which(rank(1 - sigObj$pval) < 
     (length(sigObj$pval) * sigObj$pi0))
   u <- fs(exprDat[nullProbes, ])
   Z <- model.matrix(~ u$v[ , 1:pcs])
   print('Normalizing out remaining latent structure')
-  fits2 <- runWorkflow(rawEnt$cacheDir,
+  fits2 <- runWorkflow(expEntity$cacheDir,
                        workflow = "snm", 
                        bio.var = X, 
                        adj.var = Z, 
