@@ -14,8 +14,6 @@ require(snm)
 require(ggplot2)
 require(Biobase)
 require(synapseClient)
-mplotEnt <- loadEntity('syn274067')
-attach(mplotEnt)
 
 # synapseLogin('username', 'password')
 
