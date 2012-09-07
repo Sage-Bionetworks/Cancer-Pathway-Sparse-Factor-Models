@@ -5,6 +5,11 @@
 ## Seattle, Washington
 ## brian.bot@sagebase.org
 
+## Erich S. Huang
+## Sage Bionetworks
+## Seattle, Washington
+## erich.huang@sagebase.org
+
 generateFacs <- function(esetId){
   
   require(synapseClient)
@@ -15,8 +20,8 @@ generateFacs <- function(esetId){
   normEnt <- loadEntity(esetId)
   normMat <- exprs(normEnt$objects[[1]])
   
-  trtInd <- as.numeric(grepl(tolower(annotValue(normEnt, "treatmentString")), 
-                             tolower(colnames(normMat))))
+  trtInd <- as.numeric(grepl(tolower(annotValue(normEnt, 'treatmentString')), 
+                             tolower(annotValue(normEnt, 'treatmentVector'))))
   
   ## BFRM PRIMER USING THE PERTUBATION STATUS AS DESIGN VARIABLE
   bfrmRes <- bfrm(normMat, design=trtInd)
