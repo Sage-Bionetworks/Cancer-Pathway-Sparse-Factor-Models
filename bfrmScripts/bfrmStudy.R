@@ -9,6 +9,14 @@
 require(synapseClient)
 require(bfrm)
 require(doMC)
+require(rGithubClient)
+
+## Source in the 'generateFacs' function from Github
+githubRepo <- 
+  downloadRepo('Sage-Bionetworks/Cancer-Pathway-Sparse-Factor-Models')
+
+source(paste(githubRepo@localPath, 
+             '/factorGeneration/generateFacs.R', sep = ''))
 
 ## Pull in the IDs of all normalized studies
 normalizedEsets <- 
