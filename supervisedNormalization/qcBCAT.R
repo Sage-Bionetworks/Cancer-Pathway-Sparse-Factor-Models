@@ -14,8 +14,22 @@ require(snm)
 require(ggplot2)
 require(Biobase)
 require(synapseClient)
+require(rGithubClient)
 
 # synapseLogin('username', 'password')
+
+##########
+# SOURCE IN HELPER FUNCTIONS FROM GITHUB
+##########
+
+githubRepo <- 
+  downloadRepo('Sage-Bionetworks/Cancer-Pathway-Sparse-Factor-Models')
+
+source(paste(githubRepo@localPath, 
+             '/helperFunctions/generateQCFigures.R', sep = ''))
+
+source(paste(githubRepo@localPath, 
+             '/helperFunctions/qcFunctions.R', sep = ''))
 
 ##########
 # LOAD IN RAW DATA ENTITY FROM SCR
