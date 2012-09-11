@@ -111,6 +111,8 @@ sNormProjEnt <- getEntity('syn1091010')
 sNormBCatEnt <- Data(list(name = "Supervised Normalized BCat Perturbation Data",
                           parentId = propertyValue(sNormProjEnt, "id")))
 annotValue(sNormBCatEnt, 'treatmentString') <- 'BCAT'
+annotValue(sNormBCatEnt, 'assayPlatform') <- 
+  fits[[1]]$eset@annotation
 sNormBCatEnt <- addObject(sNormBCatEnt, nBCatEset)
 sNormBCatEnt <- storeEntity(sNormBCatEnt)
 

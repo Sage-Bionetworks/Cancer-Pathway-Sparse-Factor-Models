@@ -111,6 +111,8 @@ sNormProjEnt <- getEntity('syn1091010')
 sNormEGFREnt <- Data(list(name = "Supervised Normalized EGFR Perturbation Data",
                           parentId = propertyValue(sNormProjEnt, "id")))
 annotValue(sNormEGFREnt, 'treatmentString') <- 'EGFR'
+annotValue(sNormEGFREnt, 'assayPlatform') <- 
+  fits[[1]]$eset@annotation
 sNormEGFREnt <- addObject(sNormEGFREnt, nEGFREset)
 sNormEGFREnt <- storeEntity(sNormEGFREnt)
 

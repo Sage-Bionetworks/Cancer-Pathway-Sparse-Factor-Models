@@ -111,6 +111,8 @@ sNormProjEnt <- getEntity('syn1091010')
 sNormSRCEnt <- Data(list(name = "Supervised Normalized SRC Perturbation Data",
                           parentId = propertyValue(sNormProjEnt, "id")))
 annotValue(sNormSRCEnt, 'treatmentString') <- 'SRC'
+annotValue(sNormSRCEnt, 'assayPlatform') <- 
+  fits[[1]]$eset@annotation
 sNormSRCEnt <- addObject(sNormSRCEnt, nSRCEset)
 sNormSRCEnt <- storeEntity(sNormSRCEnt)
 

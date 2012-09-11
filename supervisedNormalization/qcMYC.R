@@ -110,6 +110,8 @@ sNormProjEnt <- getEntity('syn1091010')
 sNormMycEnt <- Data(list(name = "Supervised Normalized Myc Perturbation Data",
                           parentId = propertyValue(sNormProjEnt, "id")))
 annotValue(sNormMycEnt, 'treatmentString') <- 'MYC'
+annotValue(sNormMycEnt, 'assayPlatform') <- 
+  fits[[1]]$eset@annotation
 sNormMycEnt <- addObject(sNormMycEnt, nMycEset)
 sNormMycEnt <- storeEntity(sNormMycEnt)
 

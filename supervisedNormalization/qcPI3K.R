@@ -110,6 +110,8 @@ sNormProjEnt <- getEntity('syn1091010')
 sNormPI3KEnt <- Data(list(name = "Supervised Normalized PI3K Perturbation Data",
                           parentId = propertyValue(sNormProjEnt, "id")))
 annotValue(sNormPI3KEnt, 'treatmentString') <- 'PI3K'
+annotValue(sNormPI3KEnt, 'assayPlatform') <- 
+  fits[[1]]$eset@annotation
 sNormPI3KEnt <- addObject(sNormPI3KEnt, nPI3KEset)
 sNormPI3KEnt <- storeEntity(sNormPI3KEnt)
 
