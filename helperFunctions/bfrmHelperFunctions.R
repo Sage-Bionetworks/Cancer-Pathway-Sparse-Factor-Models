@@ -22,16 +22,17 @@ parseBFRM <- function(bfrmResult){
   facList <- apply(mPostPib[ , 2:numFacs], 2, facParse)
   
   ## Annotate these indices with GENE SYMBOLS
-  annotateIndices <- function(bfrmResult){
-    annotQueryResult <- 
+  platform <- annotValue(bfrmResult, 'assayPlatform')
+  annotQueryResult <- 
       synapseQuery('SELECT id, name FROM entity WHERE entity.parentId == "syn308579"')
-    platformEntID <- annotQueryResult[annotValue(bfrmResult, 'assayPlatform'), 2]
-    platformEnt <- loadEntity(platformEntID)
-    platformAnnot <- platformEnt$objects[[1]]
-    ## platformEnt$objects$hgu133plus2_annotations[foo$V2, 2]
-
+  platformEntID <- annotQueryResult[platform, 2]
+  platformEnt <- loadEntity(platformEntID)
+  platformAnnotations <- platformEnt$objects[[1]]
+  
+  annotateList <- function(Indices, platformAnnotations){
+    geneSymbolsMappings <- platformAnnotations[Indices, 'Symbol']
   }
-  annotFacList <- lapply()
+  annotFacList <- lapply(facList, )
   
   return(facList)
 } 
