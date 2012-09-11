@@ -46,6 +46,7 @@ generateFacs <- function(esetId){
                                               " perturbation - bfrmResult object", sep=""), parentId="syn362376")))
   newEnt <- addObject(newEnt, bfrmRes)
   newEnt <- addObject(newEnt, evolveRes)
+  annotValue(newEnt, 'assayPlatform') <- normEnt$objects[[1]]@annotation
   newEnt <- storeEntity(newEnt)
 }
 
