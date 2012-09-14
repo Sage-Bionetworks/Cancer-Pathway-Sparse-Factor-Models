@@ -47,6 +47,7 @@ generateFacs <- function(esetId){
   newEnt <- addObject(newEnt, bfrmRes)
   newEnt <- addObject(newEnt, evolveRes)
   annotValue(newEnt, 'assayPlatform') <- normEnt$objects[[1]]@annotation
+  annotValue(newEnt, 'derivedFrom') <- esetId
   newEnt <- storeEntity(newEnt)
 }
 
