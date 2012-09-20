@@ -43,7 +43,7 @@ generateFacs <- function(esetId){
   ## UPLOAD BACK INTO FACTOR LIBRARY PROJECT -- bfrmResult objects STUDY
   newEnt <- 
     createEntity(Data(list(name=paste(annotValue(normEnt, "treatmentString"), 
-                                              " perturbation - bfrmResult object", sep=""), parentId="syn362376")))
+                                              " perturbation - bfrmResult object", sep=""), parentId="syn1394611")))
   newEnt <- addObject(newEnt, bfrmRes)
   newEnt <- addObject(newEnt, evolveRes)
   annotValue(newEnt, 'assayPlatform') <- normEnt$objects[[1]]@annotation
