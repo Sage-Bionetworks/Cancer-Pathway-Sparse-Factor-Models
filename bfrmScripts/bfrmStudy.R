@@ -9,22 +9,13 @@
 require(synapseClient)
 require(bfrm)
 require(doMC)
-# require(rGithubClient) COMMENTED OUT UNTIL RGITHUBCLIENT FIX
+require(rGithubClient)
 
-## COMMENTED OUT UNTIL RGITHUBCLIENT FIX
-# # Source in the 'generateFacs' function from Github
-# githubRepo <- 
-#   downloadRepo('Sage-Bionetworks/Cancer-Pathway-Sparse-Factor-Models')
-# 
-# source(paste(githubRepo@localPath, 
-#              '/factorGeneration/generateFacs.R', sep = ''))
-
-
-## COMMENTED OUT UNTIL RGITHUBCLIENT FIX
-# genFacsBlob <- 
-#   downloadRepoBlob('Sage-Bionetworks/Cancer-Pathway-Sparse-Factor-Models',
-#                    'factorGeneration/generateFacs.R')
-# sourceBlob(genFacsBlob, 'factorGeneration/generateFacs.R')
+# Using rGithubClient to source in the 'generateFacs' function
+genFacsBlob <- 
+  downloadRepoBlob('Sage-Bionetworks/Cancer-Pathway-Sparse-Factor-Models',
+                   'factorGeneration/generateFacs.R')
+sourceBlob(genFacsBlob, 'factorGeneration/generateFacs.R')
 
 ## Pull in the IDs of all normalized studies
 normalizedEsets <- 
