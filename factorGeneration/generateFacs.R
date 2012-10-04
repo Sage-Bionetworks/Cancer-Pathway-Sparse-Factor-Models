@@ -40,12 +40,16 @@ generateFacs <- function(esetId){
                       maxFacs=50,
                       maxVars=length(topProbeInd))
   
+  ## MAKE ANNOTATION EASIER. SAVE FEATURE NAMES
+  featureNames <- rownames(normMat)
+  
   ## UPLOAD BACK INTO FACTOR LIBRARY PROJECT -- bfrmResult objects STUDY
   newEnt <- 
     createEntity(Data(list(name=paste(annotValue(normEnt, "treatmentString"), 
                                               " perturbation - bfrmResult object", sep=""), parentId="syn1394611")))
   newEnt <- addObject(newEnt, bfrmRes)
   newEnt <- addObject(newEnt, evolveRes)
+  newEnt <- addObject(newEnt, featureNames)
   annotValue(newEnt, 'assayPlatform') <- normEnt$objects[[1]]@annotation
   annotValue(newEnt, 'derivedFrom') <- esetId
   newEnt <- storeEntity(newEnt)
