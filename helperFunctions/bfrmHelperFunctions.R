@@ -13,13 +13,15 @@ parseBFRM <- function(bfrmResultEnt){
   require(bfrm)
   require(synapseClient)
   print('Loading Posterior Probabilities')
-  bfrmResult <- bfrmResultEnt[[1]][[2]]
+  bfrmResult <- bfrmResultEnt$objects$evolveRes
+  featNames <- bfrmResultEnt$objects$featureNames
   mPostPib <- bfrmResult@results$mPostPib
   numCols <- dim(mPostPib)[2]
   facParse <- function(x){
     incFeatureLogical <- x > 0.99
     incFeatureInd <- grep('TRUE', incFeatureLogical)
-    return(incFeatureInd)
+    incFeatureNames <- featNames[incFeatureInd]
+    return(incFeatureNames)
   }
   print('Creating list of Factors by Features with Posterior Probability > 0.99')
   facList <- apply(mPostPib[ , 2:numCols], 2, facParse)
@@ -34,10 +36,12 @@ parseBFRM <- function(bfrmResultEnt){
   platformDir <- platformEnt$cacheDir
   platformAnnotations <- read.delim(paste(platformDir, 'probeSetAnnotations.txt', sep = '/'),
                                     header = TRUE, sep = '\t')
-  annotateList <- function(Indices, platformAnnotations){
-    geneSymbolsMappings <- platformAnnotations[Indices, 'Symbol']
+  platAnnot <- platformAnnotations[ , 2:3]
+  rownames(platAnnot) <- platformAnnotations[ , 1]
+  annotateList <- function(Indices, platAnnot){
+    geneSymbolsMappings <- platAnnot[Indices, 'Symbol']
   }
-  annotFacList <- lapply(facList, annotateList, platformAnnotations)
-  names(annotFacList) <- paste('Factor', 1:(numCols - 1), sep = ' ')
+  annotFacList <- lapply(facList, annotateList, platAnnot)
+  names(annotFacList) <- paste('Factor', 1:(numCols - 1), sep = '')
   return(annotFacList)
 } 
