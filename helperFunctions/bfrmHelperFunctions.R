@@ -31,8 +31,9 @@ parseBFRM <- function(bfrmResultEnt){
       synapseQuery('SELECT id, name FROM entity WHERE entity.parentId == "syn308579"')
   platformEntID <- annotQueryResult[grep(platform, annotQueryResult[ , 1]), 2]
   platformEnt <- loadEntity(platformEntID)
-  platformAnnotations <- platformEnt$objects[[1]]
-  
+  platformDir <- platformEnt$cacheDir
+  platformAnnotations <- read.delim(paste(platformDir, 'probeSetAnnotations.txt', sep = '/'),
+                                    header = TRUE, sep = '\t')
   annotateList <- function(Indices, platformAnnotations){
     geneSymbolsMappings <- platformAnnotations[Indices, 'Symbol']
   }
