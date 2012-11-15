@@ -11,7 +11,7 @@ require(bfrm)
 require(doMC)
 require(rGithubClient)
 
-registerDoMC()
+registerDoMC() 
 
 ## Using rGithubClient to source in the 'bfrmHelperFunctions' script
 githubRepo <- 
@@ -33,5 +33,25 @@ bfrmResultList <- mclapply(bfrmResultIDList, function(x){
 
 names(bfrmResultList) <- sapply(strsplit(bfrmResultIDs[ , 1], ' '), '[[', 1)
 
-## Take the list of result objects and annotate them
-parsedBFRMResults <- mclapply(bfrmResultList, functionEnv$parseBFRM)
+## Take the list of result objects and annotate them with gene symbols
+# parsedBFRMResults <- mclapply(bfrmResultList, functionEnv$parseBFRM)
+        ## For some reason there's unreliable performance with parallelization
+        ## of the final BFRM result object annotation, hence a for loop
+
+for(i in 1:length(bfrmResultList)){
+  bfrmTarget <- bfrmResultList[[i]]
+  bfrmName <- names(bfrmResultList)[i]
+  parsedResult <- functionEnv$parseBFRM(bfrmTarget)
+  varName <- paste(bfrmName, 'annotatedFactors', sep = '')
+  assign(varName, parsedResult)
+  newEnt <- Data(list(name = paste(varName),
+                      parentId = 'syn1488264'))
+  newEnt <- createEntity(newEnt)
+  newEnt <- addObject(newEnt, get(varName), varName)
+  newEnt$annotations$assayPlatform <- bfrmTarget$annotations$assayPlatform
+  newEnt$annotations$derivedFrom <- bfrmTarget$properties$id
+  newEnt <- storeEntity(newEnt)
+}
+
+
+

@@ -10,6 +10,11 @@
 ## Seattle, Washington
 ## erich.huang@sagebase.org
 
+## A function that takes a Synapse ID, loads the associated entity, takes the populating Expression 
+## Set and runs a two step BFRM on the data. First running a sparse ANOVA, then running an evo-
+## lutionary sparse factor analysis. The function then automatically populates the BFRM result
+## objects into the 'Factor Library' (syn1394611) Project in Synapse.
+
 generateFacs <- function(esetId){
   
   require(synapseClient)
@@ -46,7 +51,9 @@ generateFacs <- function(esetId){
   ## UPLOAD BACK INTO FACTOR LIBRARY PROJECT -- bfrmResult objects STUDY
   newEnt <- 
     createEntity(Data(list(name=paste(annotValue(normEnt, "treatmentString"), 
-                                              " perturbation - bfrmResult object", sep=""), parentId="syn1394611")))
+                                              " perturbation - bfrmResult object", sep=""), 
+                           parentId="syn1394611")))
+  
   newEnt <- addObject(newEnt, bfrmRes)
   newEnt <- addObject(newEnt, evolveRes)
   newEnt <- addObject(newEnt, featureNames)
