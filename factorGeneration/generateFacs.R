@@ -15,7 +15,7 @@
 ## lutionary sparse factor analysis. The function then automatically populates the BFRM result
 ## objects into the 'Factor Library' (syn1394611) Project in Synapse.
 
-generateFacs <- function(esetId){
+generateFacs <- function(esetId, targetSynId){
   
   require(synapseClient)
   require(bfrm)
@@ -52,7 +52,7 @@ generateFacs <- function(esetId){
   newEnt <- 
     createEntity(Data(list(name=paste(annotValue(normEnt, "treatmentString"), 
                                               " perturbation - bfrmResult object", sep=""), 
-                           parentId="syn1394611")))
+                           parentId = targetSynId)))
   
   newEnt <- addObject(newEnt, bfrmRes)
   newEnt <- addObject(newEnt, evolveRes)
