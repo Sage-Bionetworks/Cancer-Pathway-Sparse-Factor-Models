@@ -12,10 +12,8 @@ require(doMC)
 require(rGithubClient)
 
 # Using rGithubClient to source in the 'generateFacs' function
-genFacsBlob <- 
-  downloadRepoBlob('Sage-Bionetworks/Cancer-Pathway-Sparse-Factor-Models',
-                   'factorGeneration/generateFacs.R')
-sourceBlob(genFacsBlob, 'factorGeneration/generateFacs.R')
+githubRepo <- getRepo('Sage-Bionetworks/Cancer-Pathway-Sparse-Factor-Models')
+sourceRepoFile(githubRepo, 'factorGeneration/generateFacs.R')
 
 ## Pull in the IDs of all normalized studies
 normalizedEsets <- 
@@ -27,4 +25,4 @@ childIDs <- normalizedEsets[ , 2]
 registerDoMC()
 numProc <- getDoParWorkers()
 
-bfrmList <- mclapply(childIDs, generateFacs)
+bfrmList <- mclapply(childIDs, generateFacs, 'syn1491048')

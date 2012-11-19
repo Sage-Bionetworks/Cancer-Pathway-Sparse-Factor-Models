@@ -45,7 +45,7 @@ for(i in 1:length(bfrmResultList)){
   varName <- paste(bfrmName, 'annotatedFactors', sep = '')
   assign(varName, parsedResult)
   newEnt <- Data(list(name = paste(varName),
-                      parentId = 'syn1488264'))
+                      parentId = 'syn1513398'))
   newEnt <- createEntity(newEnt)
   newEnt <- addObject(newEnt, get(varName), varName)
   newEnt$annotations$assayPlatform <- bfrmTarget$annotations$assayPlatform

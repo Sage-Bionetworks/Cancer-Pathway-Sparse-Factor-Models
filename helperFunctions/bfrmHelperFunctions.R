@@ -14,14 +14,16 @@ parseBFRM <- function(bfrmResultEnt){
   require(synapseClient)
   print('Loading Posterior Probabilities')
   bfrmResult <- bfrmResultEnt$objects$evolveRes
-  featNames <- bfrmResultEnt$objects$featureNames
+  mVarIn <- bfrmResultEnt$objects$evolveRes@results$mVariablesIn
+  allFeatNames <- bfrmResultEnt$objects$featureNames
+  incFeatNames <- allFeatNames[mVarIn]
   mPostPib <- bfrmResult@results$mPostPib
   numCols <- dim(mPostPib)[2]
   facParse <- function(x){
     incFeatureLogical <- x > 0.99
     incFeatureInd <- grep('TRUE', incFeatureLogical)
-    incFeatureNames <- featNames[incFeatureInd]
-    return(incFeatureNames)
+    facFeatureNames <- incFeatNames[incFeatureInd]
+    return(facFeatureNames)
   }
   print('Creating list of Factors by Features with Posterior Probability > 0.99')
   facList <- apply(mPostPib[ , 2:numCols], 2, facParse)
