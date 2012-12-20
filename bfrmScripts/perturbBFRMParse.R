@@ -17,13 +17,13 @@ registerDoMC()
 githubRepo <- 
   getRepo('Sage-Bionetworks/Cancer-Pathway-Sparse-Factor-Models')
 
-functionEnv <- sourceRepoFile(githubRepo, 'helperFunctions/bfrmHelperFunctions.R')
+sourceRepoFile(githubRepo, 'helperFunctions/bfrmHelperFunctions.R')
   ## Right now the rGithubClient sources into a local environment. Will change this when the new
   ## version sources into globalEnv
 
 ## Bring down the bfrm result objects
 bfrmResultIDs <- 
-  synapseQuery('SELECT id, name FROM entity WHERE entity.parentId == "syn1394611"')
+  synapseQuery('SELECT id, name FROM entity WHERE entity.parentId == "syn1491048"')
 
 bfrmResultIDList <- as.list(bfrmResultIDs[ , 2])
 
@@ -41,7 +41,7 @@ names(bfrmResultList) <- sapply(strsplit(bfrmResultIDs[ , 1], ' '), '[[', 1)
 for(i in 1:length(bfrmResultList)){
   bfrmTarget <- bfrmResultList[[i]]
   bfrmName <- names(bfrmResultList)[i]
-  parsedResult <- functionEnv$parseBFRM(bfrmTarget)
+  parsedResult <- parseBFRM(bfrmTarget)
   varName <- paste(bfrmName, 'annotatedFactors', sep = '')
   assign(varName, parsedResult)
   newEnt <- Data(list(name = paste(varName),
